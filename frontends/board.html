@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>board</title>
+
+    <style>
+
+        :root {
+            --bblblue: #00295D;
+            --bbloffwhite: #EFE9DC;
+            --bblorange: #E85C3A;
+            --bblgray: #858585;
+        }
+
+        @font-face {
+            font-family: Hyperwave;
+            src: url(hyperwave.otf);
+        }
+
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-regular.otf);
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-bold.otf);
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-black.otf);
+            font-weight: bolder;
+        }
+
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-italic.otf);
+            font-weight: normal;
+            font-style: italic;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-bolditalic.otf);
+            font-weight: bold;
+            font-style: italic;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-blackitalic.otf);
+            font-weight: bolder;
+            font-style: italic;
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background-color: var(--bbloffwhite);
+            background-image: url('pattern.svg');
+            background-size: cover;
+        }
+        .questionboard {
+            flex: auto;
+            display: grid;
+            grid-auto-flow: column;
+            grid-template-rows: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+
+        .question {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bblblue);
+            font-size: 150px;
+            text-align: center;
+            margin: 10px;
+            font-family: Hyperwave;
+            color: var(--bblorange);
+            opacity: 0.25;
+            transition: all 1s;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            font-size: 42px;
+            font-family: Acumin;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .category {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            font-style: italic;
+        }
+
+        .unused {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div style="width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;">
+        <div style="width: 90vw; height: 90vh; display:flex; flex-direction: column;">
+            <div class="categories">
+                <div id="category1" class="category"></div>
+                <div id="category2" class="category"></div>
+                <div id="category3" class="category"></div>
+                <div id="category4" class="category"></div>
+                <div id="category5" class="category"></div>
+            </div>
+            <div class="questionboard">
+                <div id="question1" class="question unused"><span class="value"></span></div>
+                <div id="question2" class="question unused"><span class="value"></span></div>
+                <div id="question3" class="question unused"><span class="value"></span></div>
+                <div id="question4" class="question unused"><span class="value"></span></div>
+                <div id="question5" class="question unused"><span class="value"></span></div>
+                <div id="question6" class="question unused"><span class="value"></span></div>
+                <div id="question7" class="question unused"><span class="value"></span></div>
+                <div id="question8" class="question unused"><span class="value"></span></div>
+                <div id="question9" class="question unused"><span class="value"></span></div>
+                <div id="question10" class="question unused"><span class="value"></span></div>
+                <div id="question11" class="question unused"><span class="value"></span></div>
+                <div id="question12" class="question unused"><span class="value"></span></div>
+                <div id="question13" class="question unused"><span class="value"></span></div>
+                <div id="question14" class="question unused"><span class="value"></span></div>
+                <div id="question15" class="question unused"><span class="value"></span></div>
+                <div id="question16" class="question unused"><span class="value"></span></div>
+                <div id="question17" class="question unused"><span class="value"></span></div>
+                <div id="question18" class="question unused"><span class="value"></span></div>
+                <div id="question19" class="question unused"><span class="value"></span></div>
+                <div id="question20" class="question unused"><span class="value"></span></div>
+                <div id="question21" class="question unused"><span class="value"></span></div>
+                <div id="question22" class="question unused"><span class="value"></span></div>
+                <div id="question23" class="question unused"><span class="value"></span></div>
+                <div id="question24" class="question unused"><span class="value"></span></div>
+                <div id="question25" class="question unused"><span class="value"></span></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io.js"></script>
+    <script>
+        var socket = io();
+        const QUESTIONS_PER_CATEGORY = 5
+
+        function updateQuestion(q, catid, i) {
+            document.querySelector(`#question${(catid * QUESTIONS_PER_CATEGORY) + i + 1} .value`).innerHTML = q.value
+            if (!q.used){
+                document.querySelector(`#question${(catid * QUESTIONS_PER_CATEGORY) + i + 1}`).classList.add('unused')
+            } else {
+                document.querySelector(`#question${(catid * QUESTIONS_PER_CATEGORY) + i + 1}`).classList.remove('unused')
+            }
+        }
+
+        function updateCategory(id, name) {
+            document.querySelector(`#category${id+1}`).innerHTML = name;
+        }
+
+        function updateQuestions(data) {
+            data.forEach(category => {
+                updateCategory(category.catid, category.name)
+                category.questions.forEach((question, i) => {
+                    updateQuestion(question, category.catid, i)
+                })
+            });
+        }
+
+    function updateGamestate(state){
+        updateQuestions(state.categories)
+    }
+
+    socket.on('gamestate', (msg) => {
+        updateGamestate(msg)
+    })
+    </script>
+</body>
+</html>

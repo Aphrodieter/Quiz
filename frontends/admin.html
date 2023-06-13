@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Admin</title>
+
+    <style>
+        .questionboard {
+            display: grid;
+            grid-auto-flow: column;
+            grid-template-rows: repeat(5, minmax(0, 1fr));
+        }
+
+        .questionboard > div {
+            border: 2px solid black;
+        }
+
+        .question {
+            display: flex;
+            flex-direction: column;
+            background-color: lightslategray;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .unused {
+            background-color: lightblue;
+        }
+
+        button {
+            font-size: large;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quiz Admin Yoho</h1>
+    <div class="players">
+        <div id="p1" class="player">
+            <h2>Player 1</h2>
+            <input type="text" class="playername">
+            <button>Change Name</button>
+            <input type="number" name="" id="" class="playerscore">
+            <button>Set score</button>
+            <button onclick="buzz(0)">Fake Buzz</button>
+            <div>
+                <button onclick="changePoints(0,100)">Give 100 points</button><button onclick="changePoints(0,200)">Give 200 points</button><button onclick="changePoints(0,300)">Give 300 points</button><button onclick="changePoints(0,600)">Give 600 points</button><button onclick="changePoints(0,1000)">Give 1000 points</button>
+            </div>
+            <div>
+                <button onclick="changePoints(0,-100)">Subtract 100 points</button><button onclick="changePoints(0,-200)">Subtract 200 points</button><button onclick="changePoints(0,-300)">Subtract 300 points</button><button onclick="changePoints(0,-600)">Subtract 600 points</button><button onclick="changePoints(0,-1000)">Subtract 1000 points</button>
+            </div>
+        </div>
+        <div id="p2" class="player">
+            <h2>Player 2</h2>
+            <input type="text" class="playername">
+            <button>Change Name</button>
+            <input type="number" name="" id="" class="playerscore">
+            <button>Set score</button>
+            <button onclick="buzz(1)">Fake Buzz</button>
+            <div>
+                <button onclick="changePoints(1,100)">Give 100 points</button><button onclick="changePoints(1,200)">Give 200 points</button><button onclick="changePoints(1,300)">Give 300 points</button><button onclick="changePoints(1,600)">Give 600 points</button><button onclick="changePoints(1,1000)">Give 1000 points</button>
+            </div>
+            <div>
+                <button onclick="changePoints(1,-100)">Subtract 100 points</button><button onclick="changePoints(1,-200)">Subtract 200 points</button><button onclick="changePoints(1,-300)">Subtract 300 points</button><button onclick="changePoints(1,-600)">Subtract 600 points</button><button onclick="changePoints(1,-1000)">Subtract 1000 points</button>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h2>Control</h2>
+        <div style="font-weight: bolder; font-size: xx-large;">BUZZER OPEN: <span id="buzzerStatus">???</span></div>
+        <button onclick="socket.emit('openBuzzers')">Open Buzzers</button><button onclick="socket.emit('closeBuzzers')">Lock Buzzers</button><br>
+        <button onclick="socket.emit('hideQuestion')">Hide question</button><button onclick="socket.emit('rightAnswer')">Trigger correct</button><button onclick="socket.emit('wrongAnswer')">Trigger wrong</button>
+    </div>
+    <div>
+        <h2>Question Board</h2>
+        <div class="categories">
+            <div id="category1" class="category"></div>
+            <div id="category2" class="category"></div>
+            <div id="category3" class="category"></div>
+            <div id="category4" class="category"></div>
+            <div id="category5" class="category"></div>
+        </div>
+        <div class="questionboard">
+            <div id="question1" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question2" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question3" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question4" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question5" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question6" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question7" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question8" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question9" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question10" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question11" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question12" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question13" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question14" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question15" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question16" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question17" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question18" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question19" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question20" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question21" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question22" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question23" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question24" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+            <div id="question25" class="question unused"><span class="value"></span><span class="questiontext"></span><button class="pickbutton">pick</button><button class="usedbutton">toggle used</button></div>
+        </div>
+    </div>
+
+
+    <script src="/socket.io.js"></script>
+    <script>
+    var socket = io();
+    const QUESTIONS_PER_CATEGORY = 5
+
+    function bindClickFunctions() {
+        document.querySelectorAll('.pickbutton').forEach(btn => {
+            btn.addEventListener("click", (event => {
+                pickQuestion(event.target.parentNode.id)
+                socket.emit('openBuzzers')
+            }))
+        })
+        document.querySelectorAll('.usedbutton').forEach(btn => {
+            btn.addEventListener("click", (event => {
+                socket.emit('flipUsed', event.target.parentNode.id.match((/\d/g)).join(''))
+            }))
+        })
+    }
+
+    function buzz(id) {
+        socket.emit('buzz', id)
+    }
+
+    function changePoints(id, amount) {
+        socket.emit('changePoints', {
+            'id': id,
+            'amount': amount
+        })
+    }
+
+    function pickQuestion(q) {
+        socket.emit('pickQuestion', q.match((/\d/g)).join(''))
+    }
+
+    function updatePlayer(id, data){
+        document.querySelector(`#p${id} .playername`).value = data.name
+        document.querySelector(`#p${id} .playerscore`).value = data.score
+    }
+
+    function updateQuestion(q, catid, i) {
+        document.querySelector(`#question${(catid * QUESTIONS_PER_CATEGORY) + i + 1} .questiontext`).innerHTML = q.text
+        document.querySelector(`#question${(catid * QUESTIONS_PER_CATEGORY) + i + 1} .value`).innerHTML = q.value
+        if (!q.used){
+            document.querySelector(`#question${(catid * QUESTIONS_PER_CATEGORY) + i + 1}`).classList.add('unused')
+        } else {
+            document.querySelector(`#question${(catid * QUESTIONS_PER_CATEGORY) + i + 1}`).classList.remove('unused')
+        }
+    }
+
+    function updateCategory(id, name) {
+        document.querySelector(`#category${id+1}`).innerHTML = name;
+    }
+
+    function updateQuestions(data) {
+        data.forEach(category => {
+            updateCategory(category.catid, category.name)
+            category.questions.forEach((question, i) => {
+                updateQuestion(question, category.catid, i)
+            })
+        });
+    }
+
+    function updateBuzzerStatus(buzzerStatus) {
+        document.getElementById('buzzerStatus').innerHTML = buzzerStatus
+    }
+
+    function updateGamestate(state){
+        updatePlayer(1, state.players[0])
+        updatePlayer(2, state.players[1])
+        updateQuestions(state.categories)
+        updateBuzzerStatus(state.buzzersOpen)
+    }
+
+    function setData(key, value) {
+        socket.emit('setData', {
+            'key': key,
+            'value': value
+        })
+    }
+
+
+    bindClickFunctions()
+
+    socket.on('gamestate', (msg) => {
+        updateGamestate(msg)
+    })
+    </script>
+
+</body>
+</html>

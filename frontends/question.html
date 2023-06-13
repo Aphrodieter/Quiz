@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question</title>
+
+    <style>
+        :root {
+            --bblblue: #00295D;
+            --bbloffwhite: #EFE9DC;
+            --bblorange: #E85C3A;
+            --bblgray: #858585;
+        }
+
+        @font-face {
+            font-family: Hyperwave;
+            src: url(hyperwave.otf);
+        }
+
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-regular.otf);
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-bold.otf);
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-black.otf);
+            font-weight: bolder;
+        }
+
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-italic.otf);
+            font-weight: normal;
+            font-style: italic;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-bolditalic.otf);
+            font-weight: bold;
+            font-style: italic;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-blackitalic.otf);
+            font-weight: bolder;
+            font-style: italic;
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: "Acumin";
+        }
+
+        .question {
+            position: absolute;
+            width: 900px;
+            height: 100px;
+            color: var(--bbloffwhite);
+            background-color: var(--bblblue);
+            bottom: 50px;
+            text-align: center;
+            left: calc(1920px/2 - 900px/2);
+            font-size: 32px;
+            font-weight: bolder;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 1s;
+            transform: translateY(200px);
+        }
+
+        .question.visible {
+            opacity: 1;
+            transform: translateY(0px);
+        }
+    </style>
+</head>
+<body>
+    <div class="question">
+
+    </div>
+
+    <script src="/socket.io.js"></script>
+    <script type="module">
+
+        var socket = io();
+
+        socket.on('showQuestion', (msg) => {
+            document.querySelector('.question').innerHTML = msg.text;
+            document.querySelector('.question').classList.add('visible')
+
+        })
+
+        socket.on('hideQuestion', (msg) => {
+            document.querySelector('.question').classList.remove('visible')
+
+        })
+
+    </script>
+</body>
+</html>

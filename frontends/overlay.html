@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overlay</title>
+
+    <style>
+        :root {
+            --bblblue: #00295D;
+            --bbloffwhite: #EFE9DC;
+            --bblorange: #E85C3A;
+            --bblgray: #858585;
+        }
+
+        @font-face {
+            font-family: Hyperwave;
+            src: url(hyperwave.otf) format('opentype');
+        }
+
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-light.otf);
+            font-weight: lighter;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-regular.otf);
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-bold.otf);
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-black.otf);
+            font-weight: bolder;
+        }
+
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-italic.otf);
+            font-weight: normal;
+            font-style: italic;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-bolditalic.otf);
+            font-weight: bold;
+            font-style: italic;
+        }
+        @font-face {
+            font-family: Acumin;
+            src: url(acuminpro-blackitalic.otf);
+            font-weight: bolder;
+            font-style: italic;
+        }
+
+
+    
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: Acumin;
+        }
+
+        .player {
+            width: 200px;
+            height: 100px;
+            background-color: var(--bblblue);
+            color: var(--bbloffwhite);
+            position: absolute;
+            bottom: 50px;
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            padding: 10px;
+            transition: all 0.5s;
+        }
+
+        #player1{
+            left: 50px;
+        }
+        #player2{
+            right: 50px;
+        }
+
+        .player > .name {
+            font-size: 32px;
+            font-style: italic;
+        }
+        .player > .score {
+            font-family: Hyperwave;
+            font-size: 86px;
+            color: var(--bblorange);
+            margin: -20px;
+        }
+
+        .player.buzz {
+            box-shadow: 0 0 0px 4px var(--bblorange);
+        }
+
+        .late {
+            width: 150px;
+            height: 40px;
+
+            font-size: 20px;
+            color: var(--bbloffwhite);
+            background-color: var(--bblblue);
+            position: absolute;
+            bottom: 170px;
+            opacity: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(45px);
+            z-index: -10;
+            transition: all 0.5s;
+        }
+
+        .late.visible {
+            transform: translateY(0px); 
+        }
+
+        #late1 {
+            left: 50px;
+        }
+
+        #late2 {
+            right: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="player1" class="player">
+        <div class="name"></div>
+        <div class="score" id="player1score">0</div>
+    </div>
+    <div id="late1" class="late">abcd</div>
+    <div id="player2" class="player">
+        <div class="name"></div>
+        <div class="score" id="player2score">0</div>
+    </div>
+    <div id="late2" class="late">abcd</div>
+
+    <audio src="buzzertimer.wav" id="buzzerAudio"></audio>
+    <audio src="points_deducted.wav" id="pointsDeductedAudio"></audio>
+    <audio src="points_won.wav" id="pointsGivenAudio"></audio>
+    <audio src="right.wav" id="rightAudio"></audio>
+    <audio src="timer.wav" id="timerAudio"></audio>
+    <audio src="wrong.wav" id="wrongAudio"></audio>
+
+    <script src="/socket.io.js"></script>
+    <script type="module">
+        import { CountUp } from './countUp.min.js';
+        const options = {
+            duration: 1.2
+        }
+        var counters = [
+            new CountUp('player1score', 0, options),
+            new CountUp('player2score', 0, options)]
+        counters[0].start()
+        counters[1].start()
+        var socket = io();
+
+
+
+        function updateGamestate(data) {
+            data.players.forEach((player, index) => {
+                document.querySelector(`#player${index+1} > .name`).innerHTML = player.name
+                if (Number(document.querySelector(`#player${index+1} > .score`).innerHTML) != player.score) {
+                    counters[index].update(player.score)
+                }
+            });
+        }
+
+        socket.on('gamestate', (msg) => {
+            updateGamestate(msg)
+        })
+
+        socket.on('showBuzz', (msg) => {
+            document.querySelector(`#player${msg.id + 1}`).classList.add('buzz')
+            setTimeout(() => {document.querySelector(`#player${msg.id + 1}`).classList.remove('buzz')}, 10000)
+        })
+        socket.on('lateBuzz', (msg) => {
+
+            document.querySelector(`#late${msg.id + 1}`).innerHTML = `+${msg.diff/1000}s`
+            document.querySelector(`#late${msg.id + 1}`).classList.add('visible')
+            setTimeout(() => {document.querySelector(`#late${msg.id + 1}`).classList.remove('visible')}, 10000)
+        })
+
+        socket.on('playSound', (msg) => {
+            try {
+                document.getElementById(`${msg}Audio`).play()
+            } catch (error) {
+                console.log(error)
+            }
+        })
+
+        socket.on('lateBuzz', (msg) => {
+
+        })
+
+    </script>
+</body>
+</html>
