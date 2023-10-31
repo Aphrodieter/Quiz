@@ -23,7 +23,6 @@
     </div>
     <script src="/socket.io.js"></script>
     <script>
-        import {io} from "socket.io-client";
         var players = []
         var socket = io();
         document.addEventListener(
@@ -36,7 +35,7 @@
                     case 'a':
                         socket.emit('buzz', 0)
                         break;
-                    case 'b':
+                    case 'Enter':
                         socket.emit('buzz', 1)
                         break;
                     default:

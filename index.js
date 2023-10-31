@@ -68,13 +68,13 @@ io.on('connection', (socket) => {
   socket.on('rightAnswer', async (msg) => {
     console.log('rightanswer play');
     io.sockets.emit('playSound', 'right')
-    await fetch('http://192.168.11.169:8000/press/bank/99/3')
+    //await fetch('http://192.168.11.169:8000/press/bank/99/3')
 
   })
 
   socket.on('wrongAnswer', async (msg) => {
     io.sockets.emit('playSound', 'wrong')
-    await fetch('http://192.168.11.169:8000/press/bank/99/4')
+    //await fetch('http://192.168.11.169:8000/press/bank/99/4')
 
   })
 
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
         io.sockets.emit('playSound', 'buzzer')
         io.sockets.emit('showBuzz', {id: msg})
         
-        await fetch('http://192.168.11.169:8000/press/bank/99/2')
+        //await fetch('http://192.168.11.169:8000/press/bank/99/2')
 
 
         gameState.buzzers[msg].lastPressed = new Date()
