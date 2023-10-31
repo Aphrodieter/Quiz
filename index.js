@@ -8,7 +8,11 @@ import fetch from "node-fetch";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: '*'
+    }
+});
 
 app.get('/', (req, res) => {
   res.send('eyo')
@@ -18,6 +22,7 @@ app.use(express.static('frontends'));
 
 
 io.on('connection', (socket) => {
+
   console.log('a user connected');
   sendGamestate()
 
@@ -61,6 +66,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('rightAnswer', async (msg) => {
+    console.log('rightanswer play');
     io.sockets.emit('playSound', 'right')
     await fetch('http://192.168.11.169:8000/press/bank/99/3')
 
