@@ -92,21 +92,40 @@ io.on('connection', (socket) => {
     sendGamestate()
   })
 
+  function delay(milliseconds){
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds);
+    });
+    }
+
   socket.on('buzz', async (msg) => {
+
+    //delay studio buzzers
+    if (msg == 0){
+       await delay(200)
+    }
+
+
     if (gameState.buzzersOpen) {
-        console.log('a')
         io.sockets.emit('playSound', 'buzzer')
         io.sockets.emit('showBuzz', {id: msg})
-        console.log('');
 
-        try {
+       /*  try {
             await fetch('http://192.168.11.169:8000/press/bank/99/2')
         }
         catch (error){
             console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
-        }
+        } */
         
 
+        //remote Buzzer
+        if (msg == 1){
+            io.sockets.emit('changeButtonToPressed')
+        }
+
+
+
+        console.log(`Player: ${msg}`);
         gameState.buzzers[msg].lastPressed = new Date()
         gameState.buzzersOpen = false
     } else {
@@ -115,11 +134,17 @@ io.on('connection', (socket) => {
             gameState.buzzers[msg].lastPressed = new Date()
             console.log('late buzz')
             let diff = gameState.buzzers[msg].lastPressed - gameState.buzzers[(msg == 0) ? 1 : 0].lastPressed
-            if (diff < 5000) {
+            if (diff < 5000) { // under 5 seconds
+
                 io.sockets.emit('lateBuzz', {
                     'id': msg,
                     'diff': diff
                 })
+
+                //remote Buzzer
+                if (msg == 1){
+                    io.sockets.emit('changeButtonToPressed')
+                }
             }
         }
     }

@@ -50,13 +50,16 @@
         })
         socket.on('showBuzz', (msg) => {
             document.querySelector('.buzztext').innerHTML = `${players[msg.id].name} darf antworten!`
-            buzzer_img.src = 'buzzer_pressed.png'
 
             
             setTimeout(() => {
                 document.querySelector('.buzztext').innerHTML = ''
                 buzzer_img.src = 'buzzer_unpressed.png'
             }, 10000)
+        })
+
+        socket.on('changeButtonToPressed', () => {
+            buzzer_img.src = 'buzzer_pressed.png'
         })
     </script>
 
