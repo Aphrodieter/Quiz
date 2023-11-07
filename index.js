@@ -93,14 +93,14 @@ io.on('connection', (socket) => {
   })
 
   function delay(milliseconds){
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         setTimeout(resolve, milliseconds);
     });
     }
 
   socket.on('buzz', async (msg) => {
 
-    //delay studio buzzers
+    //delay studio buzzer
     if (msg == 0){
        await delay(200)
     }
@@ -123,9 +123,6 @@ io.on('connection', (socket) => {
             io.sockets.emit('changeButtonToPressed')
         }
 
-
-
-        console.log(`Player: ${msg}`);
         gameState.buzzers[msg].lastPressed = new Date()
         gameState.buzzersOpen = false
     } else {
