@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Buzzer</title>
+
+    <style>
+        .wrapper {
+            position: relative;
+            text-align: center;
+            color: black;
+        }
+        .buzzer{
+            max-width: 100%;
+            height: auto;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: auto;
+            margin-bottom: auto;
+            width: 50%;
+            display:block
+        }
+        .buzztext {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <a  id="buzzer">
+            <img src="buzzer_unpressed.png" id='buzzer_img' class ='buzzer' width="500" height="500" > 
+        </a>
+        <div class="buzztext"></div>
+    </div>
+    <script src="/socket.io.js"></script>
+    <script>
+        const buzzer = document.getElementById('buzzer')
+        const buzzer_img = document.getElementById('buzzer_img')
+        var players = []
+        var socket = io();
+        
+        socket.on('gamestate', (msg) => {
+            players = msg.players
+        })
+        socket.on('showBuzz', (msg) => {
+            document.querySelector('.buzztext').innerHTML = `${players[msg.id].name} darf antworten!`
+            buzzer_img.src = 'buzzer_pressed.png'
+
+            
+            setTimeout(() => {
+                document.querySelector('.buzztext').innerHTML = ''
+                buzzer_img.src = 'buzzer_unpressed.png'
+            }, 10000)
+        })
+    </script>
+
+   
+
+    <script>
+        
+        buzzer.addEventListener('mousedown', () => {
+            socket.emit('buzz', 1)
+    })
+    </script>
+</body>
+</html>

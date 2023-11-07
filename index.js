@@ -130,7 +130,7 @@ var gameState = {
             score: 0
         },
         {
-            name: 'C-BAS',
+            name: 'Soundso',
             score: 0
         }
     ],
