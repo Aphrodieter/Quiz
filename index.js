@@ -68,14 +68,22 @@ io.on('connection', (socket) => {
   socket.on('rightAnswer', async (msg) => {
     console.log('rightanswer play');
     io.sockets.emit('playSound', 'right')
-    //await fetch('http://192.168.11.169:8000/press/bank/99/3')
-
+    try {
+        await fetch('http://192.168.11.169:8000/press/bank/99/3')
+    }
+    catch (error){
+        console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
+    }
   })
 
   socket.on('wrongAnswer', async (msg) => {
     io.sockets.emit('playSound', 'wrong')
-    //await fetch('http://192.168.11.169:8000/press/bank/99/4')
-
+    try {
+        await fetch('http://192.168.11.169:8000/press/bank/99/4')
+    }
+    catch (error){
+        console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
+    }
   })
 
   socket.on('flipUsed', (msg) => {
@@ -89,9 +97,15 @@ io.on('connection', (socket) => {
         console.log('a')
         io.sockets.emit('playSound', 'buzzer')
         io.sockets.emit('showBuzz', {id: msg})
-        
-        //await fetch('http://192.168.11.169:8000/press/bank/99/2')
+        console.log('');
 
+        try {
+            await fetch('http://192.168.11.169:8000/press/bank/99/2')
+        }
+        catch (error){
+            console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
+        }
+        
 
         gameState.buzzers[msg].lastPressed = new Date()
         gameState.buzzersOpen = false
