@@ -111,6 +111,9 @@ io.on('connection', (socket) => {
 
     if (notBuzzedYet(buzzer)){
     io.sockets.emit('playSound', 'buzzer')
+    if (buzzer == 2 || buzzer == 3){
+        io.sockets.emit('changeButtonToPressed', buzzer)
+    }
     }
 
     //delay studio buzzers
@@ -131,9 +134,7 @@ io.on('connection', (socket) => {
         
 
         //remote Buzzer
-        if (buzzer == 2 || buzzer == 3){
-            io.sockets.emit('changeButtonToPressed')
-        }
+       
 
         gameState.buzzers[buzzer].lastPressed = new Date()
         gameState.buzzersOpen = false
@@ -150,10 +151,7 @@ io.on('connection', (socket) => {
                     'diff': diff
                 })
 
-                //remote Buzzer
-                if (buzzer == 2 || buzzer == 3){
-                    io.sockets.emit('changeButtonToPressed')
-                }
+                
             }
         }
     }

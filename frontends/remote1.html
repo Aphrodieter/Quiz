@@ -58,7 +58,8 @@
             }, 10000)
         })
 
-        socket.on('changeButtonToPressed', () => {
+        socket.on('changeButtonToPressed', (id) => {
+            if (id == 2)
             buzzer_img.src = 'buzzer_pressed.png'
         })
     </script>
