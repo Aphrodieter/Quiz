@@ -4,7 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remote Buzzer Conny</title>
+    <title id="title">Remote Buzzer </title>
+
+    <script src="/socket.io.js"></script>
+    <script>
+        var socket = io();
+        var players = []
+
+        socket.on('gamestate', (msg) => {
+            players = msg.players
+            document.getElementById('title').innerHTML = `Remote Buzzer (${players[2].name})`;
+        });
+    </script>
+
+    <script>
+    </script>
 
     <style>
         .wrapper {
@@ -38,16 +52,11 @@
         </a>
         <div class="buzztext"></div>
     </div>
-    <script src="/socket.io.js"></script>
+    
     <script>
         const buzzer = document.getElementById('buzzer')
         const buzzer_img = document.getElementById('buzzer_img')
-        var players = []
-        var socket = io();
         
-        socket.on('gamestate', (msg) => {
-            players = msg.players
-        })
         socket.on('showBuzz', (msg) => {
             document.querySelector('.buzztext').innerHTML = `${players[msg.id].name} darf antworten!`
 
