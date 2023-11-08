@@ -90,6 +90,12 @@
             left: 50px;
         }
         #player2{
+            left: 500px;
+        }
+        #player3{
+            right: 500px;
+        }
+        #player4{
             right: 50px;
         }
 
@@ -130,11 +136,17 @@
             transform: translateY(0px); 
         }
 
-        #late1 {
+        #late1{
             left: 50px;
         }
-
-        #late2 {
+        #late2{
+            left: 500px;
+        }
+        
+        #late3{
+            right: 500px;
+        }
+        #late4{
             right: 50px;
         }
     </style>
@@ -145,13 +157,28 @@
         <div class="score" id="player1score">0</div>
     </div>
     <div id="late1" class="late">abcd</div>
+
     <div id="player2" class="player">
         <div class="name"></div>
         <div class="score" id="player2score">0</div>
     </div>
     <div id="late2" class="late">abcd</div>
 
-    <audio src="buzzertimer.wav" id="buzzerAudio"></audio>
+    <div id="player3" class="player">
+        <div class="name"></div>
+        <div class="score" id="player3score">0</div>
+    </div>
+    <div id="late3" class="late">abcd</div>
+
+    <div id="player4" class="player">
+        <div class="name"></div>
+        <div class="score" id="player4score">0</div>
+    </div>
+    <div id="late4" class="late">abcd</div>
+
+
+    <audio src="buzzertimer.wav" id="buzzerTimerAudio"></audio>
+    <audio src="buzzer.wav" id="buzzerAudio"></audio>
     <audio src="points_deducted.wav" id="pointsDeductedAudio"></audio>
     <audio src="points_won.wav" id="pointsGivenAudio"></audio>
     <audio src="right.wav" id="rightAudio"></audio>
@@ -166,9 +193,14 @@
         }
         var counters = [
             new CountUp('player1score', 0, options),
-            new CountUp('player2score', 0, options)]
-        counters[0].start()
-        counters[1].start()
+            new CountUp('player2score', 0, options),
+            new CountUp('player3score', 0, options),
+            new CountUp('player4score', 0, options)]
+        counters[0].start();
+        counters[1].start();
+        counters[2].start();
+        counters[3].start();
+
         var socket = io();
 
 

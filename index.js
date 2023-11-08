@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', (error) => {
     console.log(`${socket.id} disconnected with error: ${error}`);
   });
-  
+
   sendGamestate()
 
   socket.on('setData', (msg) => {
@@ -52,8 +52,10 @@ io.on('connection', (socket) => {
 
   socket.on('openBuzzers', (msg) => {
     gameState.buzzersOpen = true
-    gameState.buzzers[0].lastPressed = null
-    gameState.buzzers[1].lastPressed = null
+    gameState.buzzers.forEach((buzzer, index) => {
+        gameState.buzzers[index].lastPressed = null;
+    });
+
     sendGamestate()
   })
 
@@ -95,18 +97,19 @@ io.on('connection', (socket) => {
     });
     }
 
-  socket.on('buzz', async (msg) => {
+  socket.on('buzz', async (buzzer) => {
 
-    //delay studio buzzer
-    if (msg == 0){
-       await delay(200)
-    }
+    //delay studio buzzers
+    io.sockets.emit('playSound', 'buzzer')
 
+    if (buzzer == 0 || buzzer == 1){
+        await delay(200)
+     }
 
     if (gameState.buzzersOpen) {
-        io.sockets.emit('playSound', 'buzzer')
-        io.sockets.emit('showBuzz', {id: msg})
-
+        io.sockets.emit('playSound', 'timer')
+        io.sockets.emit('showBuzz', {id: buzzer})
+        
        /*  try {
             await fetch('http://192.168.11.169:8000/press/bank/99/2')
         }
@@ -116,27 +119,27 @@ io.on('connection', (socket) => {
         
 
         //remote Buzzer
-        if (msg == 1){
+        if (buzzer == 2 || buzzer == 3){
             io.sockets.emit('changeButtonToPressed')
         }
 
-        gameState.buzzers[msg].lastPressed = new Date()
+        gameState.buzzers[buzzer].lastPressed = new Date()
         gameState.buzzersOpen = false
     } else {
-        if ((gameState.buzzers[(msg == 0) ? 1 : 0].lastPressed != null) && (gameState.buzzers[msg].lastPressed == null)) {
+        if (SomeBuzzerWasQuicker() && notBuzzedYet(buzzer)) {
             // late buzz
-            gameState.buzzers[msg].lastPressed = new Date()
+            gameState.buzzers[buzzer].lastPressed = new Date()
             console.log('late buzz')
-            let diff = gameState.buzzers[msg].lastPressed - gameState.buzzers[(msg == 0) ? 1 : 0].lastPressed
+            let diff = gameState.buzzers[buzzer].lastPressed - quickestBuzzer()
             if (diff < 5000) { // under 5 seconds
 
                 io.sockets.emit('lateBuzz', {
-                    'id': msg,
+                    'id': buzzer,
                     'diff': diff
                 })
 
                 //remote Buzzer
-                if (msg == 1){
+                if (buzzer == 2 || buzzer == 3){
                     io.sockets.emit('changeButtonToPressed')
                 }
             }
@@ -149,6 +152,26 @@ io.on('connection', (socket) => {
     console.log(e,JSON.stringify(p))
   })
 });
+
+function SomeBuzzerWasQuicker() {
+    return gameState.buzzers.some(buzzer => {
+        return buzzer.lastPressed != null});
+}
+
+function notBuzzedYet(buzzer) {
+    return gameState.buzzers[buzzer].lastPressed == null;
+}
+
+function quickestBuzzer() {
+    let dates = gameState.buzzers.map(buzzer => buzzer.lastPressed).filter(date =>{
+        return date != null;
+    });
+
+    console.log(dates);
+    let x = new Date(Math.min.apply(null, dates));
+    console.log(x);
+    return x
+}
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
@@ -164,6 +187,14 @@ var gameState = {
         },
         {
             name: 'Soundso',
+            score: 0
+        },
+        {
+            name: 'Clemens',
+            score: 0
+        },
+        {
+            name: 'Conny',
             score: 0
         }
     ],
@@ -326,6 +357,12 @@ var gameState = {
     ],
     buzzersOpen: true,
     buzzers: [
+        {
+            lastPressed: null
+        },
+        {
+            lastPressed: null
+        },
         {
             lastPressed: null
         },
