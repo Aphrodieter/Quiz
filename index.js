@@ -67,22 +67,22 @@ io.on('connection', (socket) => {
   socket.on('rightAnswer', async (msg) => {
     console.log('rightanswer play');
     io.sockets.emit('playSound', 'right')
-    try {
+    /* try {
         await fetch('http://192.168.11.169:8000/press/bank/99/3')
     }
     catch (error){
         console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
-    }
+    } */
   })
 
   socket.on('wrongAnswer', async (msg) => {
     io.sockets.emit('playSound', 'wrong')
-    try {
+   /*  try {
         await fetch('http://192.168.11.169:8000/press/bank/99/4')
     }
     catch (error){
         console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
-    }
+    } */
   })
 
   socket.on('flipUsed', (msg) => {
