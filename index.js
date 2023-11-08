@@ -8,22 +8,19 @@ import fetch from "node-fetch";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: '*'
-    }
-});
-
-app.get('/', (req, res) => {
-  res.send('eyo')
-});
+const io = new Server(server);
 
 app.use(express.static('frontends'));
 
 
 io.on('connection', (socket) => {
 
-  console.log('a user connected');
+  console.log(`${socket.id} connected`);
+
+  socket.on('disconnect', (error) => {
+    console.log(`${socket.id} disconnected with error: ${error}`);
+  });
+  
   sendGamestate()
 
   socket.on('setData', (msg) => {
