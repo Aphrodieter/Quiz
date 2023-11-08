@@ -143,7 +143,7 @@ io.on('connection', (socket) => {
             gameState.buzzers[buzzer].lastPressed = new Date()
             console.log('late buzz')
             let diff = gameState.buzzers[buzzer].lastPressed - quickestBuzzer()
-            if (diff < 5000) { // under 5 seconds
+            if (diff < 10000) { // under 10 seconds
 
                 io.sockets.emit('lateBuzz', {
                     'id': buzzer,
