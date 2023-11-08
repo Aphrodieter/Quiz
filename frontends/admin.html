@@ -43,10 +43,10 @@
     <div class="players">
         <div id="p1" class="player">
             <h2>Player 1</h2>
-            <input type="text" class="playername">
-            <button>Change Name</button>
-            <input type="number" name="" id="" class="playerscore">
-            <button>Set score</button>
+            <input id='text1' type="text" class="playername">
+            <button onclick="changeName(0 ,document.getElementById('text1').value)">Change Name</button>
+            <input id="score1" type="number" name="" class="playerscore">
+            <button onclick="changePoints(0, Number(document.getElementById('score1').value), set=true)">Set score</button>
             <button onclick="buzz(0)">Fake Buzz</button>
             <div>
                 <button onclick="changePoints(0,100)">Give 100 points</button><button onclick="changePoints(0,200)">Give 200 points</button><button onclick="changePoints(0,300)">Give 300 points</button><button onclick="changePoints(0,600)">Give 600 points</button><button onclick="changePoints(0,1000)">Give 1000 points</button>
@@ -57,16 +57,46 @@
         </div>
         <div id="p2" class="player">
             <h2>Player 2</h2>
-            <input type="text" class="playername">
-            <button>Change Name</button>
-            <input type="number" name="" id="" class="playerscore">
-            <button>Set score</button>
+            <input id='text2' type="text" class="playername">
+            <button onclick="changeName(1 ,document.getElementById('text2').value)">Change Name</button>
+            <input id="score2" type="number" name="" class="playerscore">
+            <button onclick="changePoints(1, Number(document.getElementById('score2').value), set=true)">Set score</button>
             <button onclick="buzz(1)">Fake Buzz</button>
             <div>
                 <button onclick="changePoints(1,100)">Give 100 points</button><button onclick="changePoints(1,200)">Give 200 points</button><button onclick="changePoints(1,300)">Give 300 points</button><button onclick="changePoints(1,600)">Give 600 points</button><button onclick="changePoints(1,1000)">Give 1000 points</button>
             </div>
             <div>
                 <button onclick="changePoints(1,-100)">Subtract 100 points</button><button onclick="changePoints(1,-200)">Subtract 200 points</button><button onclick="changePoints(1,-300)">Subtract 300 points</button><button onclick="changePoints(1,-600)">Subtract 600 points</button><button onclick="changePoints(1,-1000)">Subtract 1000 points</button>
+            </div>
+        </div>
+
+        <div id="p3" class="player">
+            <h2>Player 3</h2>
+            <input id='text3' type="text" class="playername">
+            <button onclick="changeName(2 ,document.getElementById('text3').value)">Change Name</button>
+            <input id="score3" type="number" name="" class="playerscore">
+            <button onclick="changePoints(2, Number(document.getElementById('score3').value), set=true)">Set score</button>
+            <button onclick="buzz(2)">Fake Buzz</button>
+            <div>
+                <button onclick="changePoints(2,100)">Give 100 points</button><button onclick="changePoints(2,200)">Give 200 points</button><button onclick="changePoints(2,300)">Give 300 points</button><button onclick="changePoints(2,600)">Give 600 points</button><button onclick="changePoints(2,1000)">Give 1000 points</button>
+            </div>
+            <div>
+                <button onclick="changePoints(2,-100)">Subtract 100 points</button><button onclick="changePoints(2,-200)">Subtract 200 points</button><button onclick="changePoints(2,-300)">Subtract 300 points</button><button onclick="changePoints(2,-600)">Subtract 600 points</button><button onclick="changePoints(2,-1000)">Subtract 1000 points</button>
+            </div>
+        </div>
+
+        <div id="p4" class="player">
+            <h2>Player 4</h2>
+            <input id='text4' type="text" class="playername">
+            <button onclick="changeName(3 ,document.getElementById('text4').value)">Change Name</button>
+            <input id="score4" type="number" name="" class="playerscore">
+            <button onclick="changePoints(3, Number(document.getElementById('score4').value), set=true)">Set score</button>
+            <button onclick="buzz(3)">Fake Buzz</button>
+            <div>
+                <button onclick="changePoints(3,100)">Give 100 points</button><button onclick="changePoints(3,200)">Give 200 points</button><button onclick="changePoints(3,300)">Give 300 points</button><button onclick="changePoints(3,600)">Give 600 points</button><button onclick="changePoints(3,1000)">Give 1000 points</button>
+            </div>
+            <div>
+                <button onclick="changePoints(3,-100)">Subtract 100 points</button><button onclick="changePoints(3,-200)">Subtract 200 points</button><button onclick="changePoints(3,-300)">Subtract 300 points</button><button onclick="changePoints(3,-600)">Subtract 600 points</button><button onclick="changePoints(3,-1000)">Subtract 1000 points</button>
             </div>
         </div>
     </div>
@@ -138,10 +168,19 @@
         socket.emit('buzz', id)
     }
 
-    function changePoints(id, amount) {
+    function changePoints(id, amount, set = false) {
         socket.emit('changePoints', {
             'id': id,
-            'amount': amount
+            'amount': amount,
+            'set': set
+        })
+    }
+
+    function changeName(id, name) {
+        console.log(name);
+        socket.emit('changeName', {
+            'id': id,
+            'name': name
         })
     }
 
@@ -184,6 +223,8 @@
     function updateGamestate(state){
         updatePlayer(1, state.players[0])
         updatePlayer(2, state.players[1])
+        updatePlayer(3, state.players[2])
+        updatePlayer(4, state.players[3])
         updateQuestions(state.categories)
         updateBuzzerStatus(state.buzzersOpen)
     }

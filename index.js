@@ -45,9 +45,19 @@ io.on('connection', (socket) => {
   })
 
   socket.on('changePoints', (msg) => {
-    gameState.players[msg.id].score += msg.amount
-    io.sockets.emit('playSound', (msg.amount > 0) ? 'pointsGiven' : 'pointsDeducted')
+    if (msg.set == true){
+        gameState.players[msg.id].score = msg.amount
+    }
+    else{
+        gameState.players[msg.id].score += msg.amount
+        io.sockets.emit('playSound', (msg.amount > 0) ? 'pointsGiven' : 'pointsDeducted')
+    }
     sendGamestate()
+  })
+
+  socket.on('changeName', (msg) => {
+    gameState.players[msg.id].name = msg.name;
+    sendGamestate();
   })
 
   socket.on('openBuzzers', (msg) => {
@@ -99,9 +109,11 @@ io.on('connection', (socket) => {
 
   socket.on('buzz', async (buzzer) => {
 
-    //delay studio buzzers
+    if (notBuzzedYet(buzzer)){
     io.sockets.emit('playSound', 'buzzer')
+    }
 
+    //delay studio buzzers
     if (buzzer == 0 || buzzer == 1){
         await delay(200)
      }
