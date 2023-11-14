@@ -15,7 +15,8 @@ app.use(express.static('frontends'));
 
 io.on('connection', (socket) => {
 
-  const IP_ADRESS = socket.request.socket.remoteAddress
+  const IP_ADRESS = socket.request.socket.remoteAddress;
+  
   console.log(`${IP_ADRESS} connected`);
 
   socket.on('disconnect', (error) => {
@@ -31,7 +32,7 @@ io.on('connection', (socket) => {
     } catch (error) {
         console.error(error)
     }
-  })
+  });
 
   socket.on('pickQuestion', (msg) => {
     let cat = Math.floor((msg-1) / 5)
@@ -39,11 +40,11 @@ io.on('connection', (socket) => {
     io.sockets.emit('showQuestion', gameState.categories[cat].questions[qindex])
     gameState.categories[cat].questions[qindex].used = true
     sendGamestate()
-  })
+  });
 
   socket.on('hideQuestion', (msg) => {
     io.sockets.emit('hideQuestion')
-  })
+  });
 
   socket.on('changePoints', (msg) => {
     if (msg.set == true){
@@ -54,12 +55,12 @@ io.on('connection', (socket) => {
         io.sockets.emit('playSound', (msg.amount > 0) ? 'pointsGiven' : 'pointsDeducted')
     }
     sendGamestate()
-  })
+  });
 
   socket.on('changeName', (msg) => {
     gameState.players[msg.id].name = msg.name;
     sendGamestate();
-  })
+  });
 
   socket.on('openBuzzers', (msg) => {
     gameState.buzzersOpen = true
@@ -68,50 +69,37 @@ io.on('connection', (socket) => {
     });
 
     sendGamestate()
-  })
+  });
 
   socket.on('closeBuzzers', (msg) => {
     gameState.buzzersOpen = false
     sendGamestate()
-  })
+  });
 
   socket.on('rightAnswer', async (msg) => {
     console.log('rightanswer play');
     io.sockets.emit('playSound', 'right')
-    /* try {
-        await fetch('http://192.168.11.169:8000/press/bank/99/3')
-    }
-    catch (error){
-        console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
-    } */
-  })
+    //triggerCompanion(3);
+  });
 
   socket.on('wrongAnswer', async (msg) => {
     io.sockets.emit('playSound', 'wrong')
-   /*  try {
-        await fetch('http://192.168.11.169:8000/press/bank/99/4')
-    }
-    catch (error){
-        console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
-    } */
-  })
+    //triggerCompanion(4);
+  });
 
   socket.on('flipUsed', (msg) => {
-    let i = msg - 1
-    gameState.categories[Math.floor(i/5)].questions[i%5].used = !gameState.categories[Math.floor(i/5)].questions[i%5].used
-    sendGamestate()
-  })
+    let i = msg - 1;
+    gameState.categories[Math.floor(i/5)].questions[i%5].used = !gameState.categories[Math.floor(i/5)].questions[i%5].used;
+    sendGamestate();
+  });
 
-  function delay(milliseconds){
-    return new Promise((resolve) => {
-        setTimeout(resolve, milliseconds);
-    });
-    }
+ 
 
   socket.on('buzz', async (buzzer) => {
 
     if (notBuzzedYet(buzzer)){
     io.sockets.emit('playSound', 'buzzer')
+
     if (buzzer == 2 || buzzer == 3){
         io.sockets.emit('changeButtonToPressed', buzzer)
     }
@@ -126,13 +114,8 @@ io.on('connection', (socket) => {
         io.sockets.emit('playSound', 'timer')
         io.sockets.emit('showBuzz', {id: buzzer})
         
-       /*  try {
-            await fetch('http://192.168.11.169:8000/press/bank/99/2')
-        }
-        catch (error){
-            console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
-        } */
-        
+
+        //triggerCompanion(2)
 
         //remote Buzzer
        
@@ -157,21 +140,30 @@ io.on('connection', (socket) => {
         }
     }
     sendGamestate()
-  })
+  });
 
   socket.onAny((e, p) => {
     console.log(e,JSON.stringify(p))
   })
 });
 
+async function triggerCompanion(button){
+        try {
+            await fetch(`http://192.168.11.169:8000/press/bank/99/${button}`)
+        }
+        catch (error){
+            console.log('ERROR TRIGGERING LIGHT: Graphics Computer not running Companion');
+        } 
+}
+
 function SomeBuzzerWasQuicker() {
     return gameState.buzzers.some(buzzer => {
         return buzzer.lastPressed != null});
-}
+};
 
 function notBuzzedYet(buzzer) {
     return gameState.buzzers[buzzer].lastPressed == null;
-}
+};
 
 function quickestBuzzer() {
     let dates = gameState.buzzers.map(buzzer => buzzer.lastPressed).filter(date =>{
@@ -182,7 +174,13 @@ function quickestBuzzer() {
     let x = new Date(Math.min.apply(null, dates));
     console.log(x);
     return x
-}
+};
+
+function delay(milliseconds){
+    return new Promise((resolve) => {
+        setTimeout(resolve, milliseconds);
+    });
+    };
 
 server.listen(3000, () => {
   console.log('listening on *:3000');
