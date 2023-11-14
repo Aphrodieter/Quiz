@@ -15,10 +15,11 @@ app.use(express.static('frontends'));
 
 io.on('connection', (socket) => {
 
-  console.log(`${socket.id} connected`);
+  const IP_ADRESS = socket.request.socket.remoteAddress
+  console.log(`${IP_ADRESS} connected`);
 
   socket.on('disconnect', (error) => {
-    console.log(`${socket.id} disconnected with error: ${error}`);
+    console.log(`${IP_ADRESS} disconnected with error: ${error}`);
   });
 
   sendGamestate()
